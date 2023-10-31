@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather-now</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <style>
+        @import url(./weather.css);
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="search">
+            <input class="inputsearch" placeholder="Enter City Name"/>
+            <button class="searchbutton"></button>
+        </div>
+        <div class="invalid">
+            <p>Invalid City Name.</p>
+        </div>
+            <div class="atmos">
+                <img class="atmosphere" src="./img/cloudy.png"/>
+            </div>
+            <h1 class="temp">-28 °C</h1>
+            <h2 class="city">Antarctica</h2>
+            <div class="details">
+                <div class="wind">
+                    <img class="windimg" src="./img/wind.png"/>
+                    <h3 class="windspeed">7.4 km/h</h3>
+                </div>
+                <div class="humidity">
+                    <img class="humidityimg" src="./img/humidity.png"/>
+                    <h3 class="humid">80 %</h3>
+                </div>
+                <div class="realfeel">
+                    <img class="realfeelimg" src="./img/realfeel.png"/>
+                    <h3 class="feelslike">-32 °C</h3>
+                </div>
+            </div>
+            <div class="details">
+                <div class="visibility">
+                    <img class="windimg" src="./img/vision.png"/>
+                    <h3 class="visible">0.1 km</h3>
+                </div>
+                <div class="sunrise">
+                    <img class="humidityimg" src="./img/sunrise.png"/>
+                    <h3 class="srisetime">N/A</h3>
+                </div>
+                <div class="sunset">
+                    <img class="realfeelimg" src="./img/sunset.png"/>
+                    <h3 class="ssettime">N/A</h3>
+                </div>
+        </div>
+        
+    </div>
+
+
+    <script>
+        const apiKey ="7935e8cb2e2bd6adbf55671071b7754b";
+        const apiUrl ="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+        
+        const searchBox = document.querySelector(".inputsearch");
+        const searchBtn = document.querySelector(".searchbutton");
+
+        const atmosphereImg = document.querySelector(".atmosphere");
+
+        searchBtn.addEventListener("click", ()=> {
+            checkWeather(searchBox.value);
+        })
+
+        async function checkWeather (city){
+        const response = await fetch(apiUrl + city +`&appid=${apiKey}`);
+            
+        var data = await response.json();
+
+            let time = data.sys.sunrise;
+            let time2 = data.sys.sunset;
+            
+            let date2 = new Date(time2*1000);
+            let hours2 = date2.getHours();
+            let mins2 = date2.getMinutes();
+
+            let date = new Date(time*1000);
+            let hours = date.getHours();
+            let mins = date.getMinutes();
+
+            console.log(data);
+
+            document.querySelector(".city").innerHTML = data.name;
+            document.querySelector(".temp").innerHTML = Math.round(data.main.temp)+ " °C";
+            document.querySelector(".feelslike").innerHTML = data.main.feels_like+ " °C";
+            document.querySelector(".windspeed").innerHTML = data.wind.speed + " km/h";
+            document.querySelector(".humid").innerHTML = data.main.humidity + " %";
+            document.querySelector(".visible").innerHTML = data.visibility+ " m";
+            document.querySelector(".srisetime").innerHTML = hours+":"+mins+ "am";
+            document.querySelector(".ssettime").innerHTML = hours+":"+mins+ "pm";
+
+            if(data.weather[0].main == "Clouds"){
+                atmosphereImg.src = "./img/clouds.png"
+            }
+            else if(data.weather[0].main == "Clear"){
+                atmosphereImg.src = "./img/sun.png"
+            }
+            else if(data.weather[0].main == "Rain"){
+                atmosphereImg.src = "./img/rain.png"
+            }
+            else if(data.weather[0].main == "Snow"){
+                atmosphereImg.src = "./img/cloudy.png"
+            }
+        }
+    </script>
+</body>
+</html>
